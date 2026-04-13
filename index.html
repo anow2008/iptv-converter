@@ -2,52 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>E2 IPTV Standard Converter</title>
+    <title>E2 IPTV Converter PRO</title>
     <style>
-        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
-        textarea { width: 95%; height: 400px; background: #1e1e1e; color: #f0f0f0; border: 2px solid #333; padding: 10px; border-radius: 10px; }
-        .btn { background: #007bff; color: white; border: none; padding: 15px 30px; margin: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        body { background: #0f0f0f; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
+        textarea { width: 95%; height: 400px; background: #1a1a1a; color: #ffffff; border: 2px solid #333; padding: 12px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+        .btn { background: #007bff; color: white; border: none; padding: 15px 40px; margin: 20px 10px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background: #0056b3; box-shadow: 0 0 10px #007bff; }
     </style>
 </head>
 <body>
 
-    <h2 style="color:white">Enigma2 Bouquet Fix for Editors</h2>
-    <textarea id="box" placeholder="Paste M3U links here..."></textarea>
+    <h2 style="color:white">Enigma2 Bouquet Fixer (Editor Compatible)</h2>
+    <textarea id="box" placeholder="Paste your M3U content here..."></textarea>
     <br>
-    <button class="btn" onclick="startConversion()">Convert Now</button>
+    <button class="btn" onclick="processStreams()">Convert for DreamboxEdit</button>
 
     <script>
-        function startConversion() {
+        function processStreams() {
             var area = document.getElementById('box');
-            var rawData = area.value;
-            var lines = rawData.split('\n');
-            var finalResult = "#NAME IPTV Bouquet\n";
-            var currentName = "Stream";
+            var content = area.value.trim();
+            if (!content) return alert("Empty input!");
+
+            var lines = content.split(/\r?\n/);
+            var output = "#NAME IPTV Bouquet\r\n";
+            var currentName = "";
 
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
 
-                if (line.startsWith("#EXTINF")) {
-                    currentName = line.split(',').pop().trim();
+                if (line.toUpperCase().startsWith("#EXTINF")) {
+                    // سحب اسم القناة بدقة بعد الفاصلة
+                    var commaIndex = line.lastIndexOf(',');
+                    currentName = (commaIndex !== -1) ? line.substring(commaIndex + 1).trim() : "Stream";
                 } 
-                else if (line.startsWith("http")) {
-                    // 1. تنظيف الرابط وفك أي تشفير
-                    var rawUrl = decodeURIComponent(line);
+                else if (line.toLowerCase().startsWith("http")) {
+                    // 1. تنظيف الرابط من أي مسافات مخفية
+                    var url = line.split(' ')[0].trim();
                     
-                    // 2. تحويل الرموز لـ Hexadecimal (النقطتين لـ %3a)
-                    // لكن القنوات بتظهر فاضية لو مفيش %3a في آخر الرابط قبل الاسم
-                    var formattedUrl = rawUrl.replace(/:/g, '%3a');
+                    // 2. فك التشفير ثم إعادة التشفير للنقط فقط (:)
+                    var cleanUrl = decodeURIComponent(url);
+                    var enigmaUrl = cleanUrl.replace(/:/g, '%3a');
+
+                    // 3. بناء السطر البرمجي (Format Standard)
+                    // الـ \r\n مهمة جداً لبرامج التعديل عشان متقرأش الملف سطر واحد
+                    output += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + enigmaUrl + ":" + (currentName || "IPTV Stream") + "\r\n";
+                    output += "#DESCRIPTION " + (currentName || "IPTV Stream") + "\r\n";
                     
-                    // 3. بناء السطر بالصيغة اللي بيفهمها DreamboxEdit مية في المية
-                    // الصيغة: #SERVICE 4097:0:1:0:0:0:0:0:0:الرابط_مُشفر:الاسم
-                    var serviceLine = "#SERVICE 4097:0:1:0:0:0:0:0:0:" + formattedUrl + ":" + currentName + "\n";
-                    
-                    finalResult += serviceLine;
-                    finalResult += "#DESCRIPTION " + currentName + "\n";
+                    // تصقير الاسم للقناة اللي بعدها
+                    currentName = "";
                 }
             }
-            area.value = finalResult;
-            alert("تم التعديل. جرب الآن الاستيراد في البرنامج.");
+
+            area.value = output;
+            alert("Success! Copy and save as userbouquet.xxxx.tv");
         }
     </script>
 </body>
