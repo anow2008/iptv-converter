@@ -2,59 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>E2 IPTV Converter PRO</title>
+    <title>E2 IPTV Standard Converter</title>
     <style>
-        body { background: #0f0f0f; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
-        textarea { width: 95%; height: 400px; background: #1a1a1a; color: #ffffff; border: 2px solid #333; padding: 12px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
-        .btn { background: #007bff; color: white; border: none; padding: 15px 40px; margin: 20px 10px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 16px; transition: 0.3s; }
-        .btn:hover { background: #0056b3; box-shadow: 0 0 10px #007bff; }
+        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
+        textarea { width: 95%; height: 400px; background: #1a1a1a; color: #fff; border: 2px solid #333; padding: 10px; border-radius: 8px; }
+        .btn { background: #007bff; color: white; border: none; padding: 15px 30px; margin: 20px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .btn:hover { background: #0056b3; }
     </style>
 </head>
 <body>
 
-    <h2 style="color:white">Enigma2 Bouquet Fixer (Editor Compatible)</h2>
-    <textarea id="box" placeholder="Paste your M3U content here..."></textarea>
+    <h2>Enigma2 IPTV Converter (Standard Fix)</h2>
+    <textarea id="box" placeholder="Paste your M3U here..."></textarea>
     <br>
-    <button class="btn" onclick="processStreams()">Convert for DreamboxEdit</button>
+    <button class="btn" onclick="convert()">Convert Now</button>
 
     <script>
-        function processStreams() {
+        function convert() {
             var area = document.getElementById('box');
-            var content = area.value.trim();
-            if (!content) return alert("Empty input!");
-
-            var lines = content.split(/\r?\n/);
+            var lines = area.value.split('\n');
             var output = "#NAME IPTV Bouquet\r\n";
-            var currentName = "";
+            var name = "Stream";
 
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
 
-                if (line.toUpperCase().startsWith("#EXTINF")) {
-                    // سحب اسم القناة بدقة بعد الفاصلة
-                    var commaIndex = line.lastIndexOf(',');
-                    currentName = (commaIndex !== -1) ? line.substring(commaIndex + 1).trim() : "Stream";
+                if (line.startsWith("#EXTINF")) {
+                    name = line.split(',').pop().trim();
                 } 
-                else if (line.toLowerCase().startsWith("http")) {
-                    // 1. تنظيف الرابط من أي مسافات مخفية
-                    var url = line.split(' ')[0].trim();
+                else if (line.startsWith("http")) {
+                    // 1. تنظيف الرابط وفك التشفير
+                    var url = decodeURIComponent(line);
                     
-                    // 2. فك التشفير ثم إعادة التشفير للنقط فقط (:)
-                    var cleanUrl = decodeURIComponent(url);
-                    var enigmaUrl = cleanUrl.replace(/:/g, '%3a');
+                    // 2. تحويل النقطتين لـ %3a
+                    var encodedUrl = url.replace(/:/g, '%3a');
 
-                    // 3. بناء السطر البرمجي (Format Standard)
-                    // الـ \r\n مهمة جداً لبرامج التعديل عشان متقرأش الملف سطر واحد
-                    output += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + enigmaUrl + ":" + (currentName || "IPTV Stream") + "\r\n";
-                    output += "#DESCRIPTION " + (currentName || "IPTV Stream") + "\r\n";
-                    
-                    // تصقير الاسم للقناة اللي بعدها
-                    currentName = "";
+                    // 3. التعديل الجوهري: إضافة الصفر العاشر (0:0:0:0:0:0:0:0:0:0:)
+                    // ده اللي بيخلي الملف يقرأ في DreamboxEdit
+                    output += "#SERVICE 4097:0:1:0:0:0:0:0:0:0:" + encodedUrl + ":" + name + "\r\n";
+                    output += "#DESCRIPTION " + name + "\r\n";
                 }
             }
-
             area.value = output;
-            alert("Success! Copy and save as userbouquet.xxxx.tv");
+            alert("Done! Ready for DreamboxEdit.");
         }
     </script>
 </body>
