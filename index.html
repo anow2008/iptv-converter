@@ -1,77 +1,41 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head>
+<html lang="en"> <head>
     <meta charset="UTF-8">
     <title>E2 IPTV Converter</title>
     <style>
-        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
+        body { 
+            background: #121212; 
+            color: #00ff00; 
+            font-family: monospace; 
+            text-align: center; 
+            padding: 20px;
+            direction: ltr; /* تأكيد الاتجاه من اليسار لليمين */
+        }
         h2 { color: white; }
         textarea { 
             width: 90%; height: 350px; 
             background: #1e1e1e; color: #00ff00; 
             border: 2px solid #333; padding: 10px; 
             font-size: 14px; border-radius: 10px;
+            text-align: left; /* الروابط تبدأ من الشمال */
+            direction: ltr;
         }
         .btn { 
             background: #007bff; color: white; border: none; 
             padding: 15px 30px; margin: 10px; cursor: pointer; 
             border-radius: 5px; font-size: 16px; font-weight: bold;
         }
-        .btn:hover { background: #0056b3; }
-        .footer { margin-top: 20px; color: #888; font-size: 12px; }
+        /* ... باقي الستايل كما هو ... */
     </style>
 </head>
 <body>
 
-    <h2>محول روابط IPTV إلى Enigma2</h2>
-    <p style="color: #aaa;">ضع الروابط هنا ثم اضغط على الزر الأزرق</p>
+    <h2>Enigma2 IPTV Bouquet Converter</h2>
+    <p style="color: #aaa;">Paste your M3U links below and click Convert</p>
 
-    <textarea id="box" placeholder="انسخ روابط M3U هنا..."></textarea>
+    <textarea id="box" placeholder="Paste your M3U list here..."></textarea>
+    
+    ```
 
-    <br>
-    <button class="btn" onclick="startConversion()">تحويل الآن (Convert)</button>
-    <button class="btn" style="background:#555" onclick="document.getElementById('box').value=''">مسح (Clear)</button>
-
-    <div class="footer">تظهر النتيجة في المربع أعلاه بعد التحويل مباشرة</div>
-
-    <script>
-        function startConversion() {
-            var area = document.getElementById('box');
-            var rawData = area.value;
-            
-            if (!rawData.trim()) {
-                alert("المربع فارغ! حط الروابط الأول.");
-                return;
-            }
-
-            var lines = rawData.split('\n');
-            var finalResult = "#NAME IPTV Bouquet\n";
-            var currentChannelName = "Channel";
-
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i].trim();
-
-                // لو السطر فيه اسم القناة
-                if (line.includes("#EXTINF")) {
-                    var parts = line.split(',');
-                    currentChannelName = parts[parts.length - 1] || "Channel";
-                } 
-                // لو السطر هو الرابط
-                else if (line.startsWith("http")) {
-                    // تحويل النقطتين لـ %3a عشان الرسيفر
-                    var encodedUrl = line.replace(/:/g, '%3a');
-                    
-                    finalResult += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + encodedUrl + ":" + currentChannelName + "\n";
-                    finalResult += "#DESCRIPTION " + currentChannelName + "\n";
-                }
-            }
-
-            // أهم سطر: بيمسح القديم ويحط الجديد في نفس المربع
-            area.value = finalResult;
-            
-            // تنبيه بسيط عشان تعرف إن العملية خلصت
-            alert("تم التحويل! انسخ الكود الجديد من المربع.");
-        }
-    </script>
-</body>
-</html>
+### ملخص النصيحة:
+خليها `lang="en"` طالما الأداة برمجية وهدفها إخراج كود (Bouquet)، لأن ده بيمنع أي مشاكل في عرض الرموز الخاصة اللي الإنيجما 2 حساس جداً ليها. وكده كده أنت "برنس" في التعامل مع الـ HTML، فالتغيير ده هيخلي شكل الصفحة "احترافي" أكتر كأداة تطوير (Dev Tool).
