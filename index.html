@@ -1,45 +1,115 @@
 <!DOCTYPE html>
-<html lang="hr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IPTV Converter</title>
+    <title>IPTV to Enigma2 Converter</title>
     <style>
-        /* هنا كل تنسيقات الألوان والتصميم (CSS) اللي في الكود الأصلي */
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #0f2027, #2c5364);
             color: #f0f0f0;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            font-family: sans-serif;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
-        /* ... باقي كود الـ CSS من رسالتك الأولى ... */
-        header, footer { text-align: center; padding: 20px; background-color: rgba(0, 0, 0, 0.7); }
-        .button { background: linear-gradient(135deg, #00c6ff, #0072ff); border: none; padding: 12px 24px; color: white; border-radius: 8px; cursor: pointer; }
-        textarea { width: 90%; max-width: 800px; height: 300px; background-color: #222; color: #f0f0f0; }
+        header { text-align: center; margin-bottom: 20px; }
+        textarea {
+            width: 90%;
+            max-width: 800px;
+            height: 300px;
+            background-color: #222;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            font-family: monospace;
+        }
+        .button-group { margin: 20px 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .button {
+            background: #0072ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .button:hover { background: #00c6ff; }
+        .input-section { margin-top: 10px; }
+        input { padding: 8px; border-radius: 4px; border: none; margin-left: 5px; }
     </style>
-    <script>
-        /* هنا كل الوظائف البرمجية (JavaScript) اللي بتعمل التحويل */
-        function processInput(serviceType, prefix = '') {
-            // ... كود التحويل اللي في رسالتك الأولى ...
-        }
-        // ... باقي الدوال (resetForm, downloadFile, etc.) ...
-    </script>
 </head>
 <body>
-    <header>
-        <h1>..:: ciefpsettings IPTV Converter 2025 ::..</h1>
-        <p>Script for converting IPTV links to Enigma2 bouquets.</p>
-    </header>
 
-    <main>
-        <textarea id="ExampleOutput" placeholder="1. Paste links..."></textarea>
-        <div class="button-group">
-            <button class="button" onclick="processInput('4097:0:1')">Convert to 4097</button>
-            <button class="button" onclick="resetForm()">Reset</button>
-        </div>
-        </main>
+<header>
+    <h1>IPTV Converter 2026</h1>
+    <p>Paste M3U links below and click Convert</p>
+</header>
+
+<textarea id="ExampleOutput" placeholder="Paste your #EXTM3U links here..."></textarea>
+
+<div class="button-group">
+    <button class="button" onclick="processInput('4097:0:1')">Convert (Gstreamer)</button>
+    <button class="button" onclick="processInput('1:0:1')">Convert (DVB)</button>
+    <button class="button" onclick="processInput('5002:0:1')">Convert (Exteplayer3)</button>
+    <button class="button" onclick="resetForm()">Reset</button>
+</div>
+
+<div class="input-section">
+    <label>Bouquet Name:</label>
+    <input id="bouquetName" value="My IPTV" type="text">
+    <button class="button" style="background: #28a745;" onclick="downloadFile()">Download .tv File</button>
+</div>
+
+<script>
+    function processInput(serviceType) {
+        const outputElement = document.getElementById("ExampleOutput");
+        const bouquetName = document.getElementById("bouquetName").value.trim() || "IPTV";
+        const lines = outputElement.value.split("\n");
+        
+        let result = `#NAME ${bouquetName}\n`;
+        let channelName = '';
+
+        lines.forEach((line) => {
+            const trimmedLine = line.trim();
+            if (trimmedLine === '' || trimmedLine.startsWith("#EXTM3U")) return;
+
+            if (trimmedLine.startsWith("#EXTINF")) {
+                const commaIndex = trimmedLine.indexOf(',');
+                if (commaIndex !== -1) {
+                    channelName = trimmedLine.substring(commaIndex + 1).trim();
+                }
+            } else if (trimmedLine.startsWith("http")) {
+                let url = trimmedLine.replace(/:/g, '%3a');
+                if (!channelName) channelName = "Unknown Channel";
+                
+                result += `#SERVICE ${serviceType}:0:0:0:0:0:0:0:${url}:${channelName}\n`;
+                result += `#DESCRIPTION ${channelName}\n`;
+                channelName = ''; // Reset for next channel
+            }
+        });
+
+        outputElement.value = result;
+    }
+
+    function resetForm() {
+        document.getElementById("ExampleOutput").value = '';
+    }
+
+    function downloadFile() {
+        const bouquetName = document.getElementById("bouquetName").value.trim() || "channels";
+        const output = document.getElementById("ExampleOutput").value;
+        if (!output) return alert("No data to download!");
+        
+        const fileName = `userbouquet.${bouquetName}.tv`;
+        const blob = new Blob([output], { type: 'text/plain' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+    }
+</script>
+
 </body>
 </html>
