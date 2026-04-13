@@ -1,54 +1,397 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>E2 IPTV Final Fix</title>
-    <style>
-        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
-        textarea { width: 95%; height: 400px; background: #1e1e1e; color: #f0f0f0; border: 2px solid #333; padding: 10px; border-radius: 10px; font-size: 13px; }
-        .btn { background: #28a745; color: white; border: none; padding: 15px 30px; margin: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 16px; }
-        .btn:hover { background: #218838; }
-    </style>
-</head>
-<body>
-
-    <h2 style="color:white">Enigma2 Bouquet Converter (Standard Format)</h2>
-    <textarea id="box" placeholder="ضع روابط M3U هنا..."></textarea>
-    <br>
-    <button class="btn" onclick="startConversion()">Convert for Channels Editor</button>
-
-    <script>
-        function startConversion() {
-            var area = document.getElementById('box');
-            var rawData = area.value;
-            var lines = rawData.split('\n');
-            var finalResult = "#NAME IPTV Bouquet\n";
-            var currentName = "Stream";
-
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i].trim();
-
-                if (line.startsWith("#EXTINF")) {
-                    currentName = line.split(',').pop().trim();
-                } 
-                else if (line.startsWith("http")) {
-                    // 1. فك أي تشفير قديم للحصول على الرابط الخام
-                    var rawUrl = decodeURIComponent(line);
-                    
-                    // 2. السر هنا: تحويل كل النقط (:) لـ %3a
-                    var formattedUrl = rawUrl.replace(/:/g, '%3a');
-                    
-                    // 3. لكن لازم نرجع أول واحدة بعد http أو https لأصلها عشان السطر يشتغل
-                    formattedUrl = formattedUrl.replace(/http%3a/g, 'http:').replace(/https%3a/g, 'https:');
-                    
-                    // السطر ده هو اللي بيفهمه DreamboxEdit
-                    finalResult += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + formattedUrl + ":" + currentName + "\n";
-                    finalResult += "#DESCRIPTION " + currentName + "\n";
-                }
-            }
-            area.value = finalResult;
-            alert("تم التحويل! جرب الآن تفتح الملف ببرنامج تعديل القنوات.");
-        }
-    </script>
-</body>
-</html>
+#NAME IPTV Bouquet
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e925bc68d18a00077bb990.m3u8:48 Hours
+#DESCRIPTION 48 Hours
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63e36b374e83e70008987c58.m3u8:Aftershock
+#DESCRIPTION Aftershock
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-69172f1699758a0f03459c5b.m3u8:America's Funniest Home Videos (720p)
+#DESCRIPTION America's Funniest Home Videos (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-68679fc6bb46d0bdd38ac9a4.m3u8:America's Next Top Model
+#DESCRIPTION America's Next Top Model
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6408ae8f9b39550008caf94f.m3u8:American Pickers
+#DESCRIPTION American Pickers
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6850335b5965a2fd49f7e36d.m3u8:Andromeda
+#DESCRIPTION Andromeda
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65cf8bdaa25d5e00081e1e5d.m3u8:Anger Management
+#DESCRIPTION Anger Management
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-69173ce8abd4703b27f71d44.m3u8:Anthony Bourdain: Parts Unknown
+#DESCRIPTION Anthony Bourdain: Parts Unknown
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-638e10de75c3a30007092693.m3u8:Antiques Road Show UK
+#DESCRIPTION Antiques Road Show UK
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-68b9afd66985e192657a2b7f.m3u8:APTN Beyond (720p)
+#DESCRIPTION APTN Beyond (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65cf8b9328730900087c5324.m3u8:Are We There Yet?
+#DESCRIPTION Are We There Yet?
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6482f27c17f5e10008c10ff0.m3u8:Arthur
+#DESCRIPTION Arthur
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66fd394e9269330008413302.m3u8:AWSN (720p)
+#DESCRIPTION AWSN (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6540fe4bbdf3cf0008aa2cdd.m3u8:Ax Men (720p)
+#DESCRIPTION Ax Men (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-655f2ee6c0fc88000877d26c.m3u8:Bar Rescue
+#DESCRIPTION Bar Rescue
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdae69a47b6c00076af298.m3u8:Baywatch
+#DESCRIPTION Baywatch
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-666815f24b9fb400083f7e31.m3u8:Best of Dr. Phil
+#DESCRIPTION Best of Dr. Phil
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6310cbee5a8ad300070fdb7c.m3u8:Best of The Drew Barrymore Show
+#DESCRIPTION Best of The Drew Barrymore Show
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb9844db5a4a0007ebc2a3.m3u8:Beyond History
+#DESCRIPTION Beyond History
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62b976b93279cb000772c6f9.m3u8:Bloomberg TV+
+#DESCRIPTION Bloomberg TV+
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66588931a3865300085ca800.m3u8:Bob l'éponge (720p)
+#DESCRIPTION Bob l'éponge (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-696e647b07ea70192d49f6a5.m3u8:Bonanza
+#DESCRIPTION Bonanza
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66166989635c7500084105a2.m3u8:Bondi Rescue (720p)
+#DESCRIPTION Bondi Rescue (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb9c4539183b00076a3875.m3u8:Busted at the Border
+#DESCRIPTION Busted at the Border
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f8a2a23a0d700008a6ed7b.m3u8:Catfish
+#DESCRIPTION Catfish
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6536725167bd1a00084481bc.m3u8:CBC News
+#DESCRIPTION CBC News
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66a8f01914a2bb00084dd86c.m3u8:CBC News British Columbia
+#DESCRIPTION CBC News British Columbia
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6536721dbfbaec00088687c0.m3u8:CBC News Toronto (720p)
+#DESCRIPTION CBC News Toronto (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6350fdd266e9ea0007bedec5.m3u8:CBS News 24/7 (720p)
+#DESCRIPTION CBS News 24/7 (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6582f7d612d5ee00089a663d.m3u8:Cheaters
+#DESCRIPTION Cheaters
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdb7f0db2eb30007376d4d.m3u8:Cheers
+#DESCRIPTION Cheers
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb6d4308f5ec0007453c09.m3u8:Christmas 365
+#DESCRIPTION Christmas 365
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65367e724f123d000877cfe5.m3u8:Come Dine with Me (720p)
+#DESCRIPTION Come Dine with Me (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f8a408bd341e000818fcda.m3u8:Comedy Central
+#DESCRIPTION Comedy Central
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f8a949f5b5e4000862467c.m3u8:Comedy Central Animation
+#DESCRIPTION Comedy Central Animation
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-638e0f4832494900074481e7.m3u8:Confess by Nosey
+#DESCRIPTION Confess by Nosey
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6601948129adfd0008a1c0ba.m3u8:Crime & Justice (720p)
+#DESCRIPTION Crime & Justice (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6703a96763292d000836b4fa.m3u8:Crime Up Close (720p)
+#DESCRIPTION Crime Up Close (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e9224f41d5e100076db2b6.m3u8:CSI
+#DESCRIPTION CSI
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6540fec1770cf1000866b65b.m3u8:Dance Moms (720p)
+#DESCRIPTION Dance Moms (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-647f07e74cfc2c0008a2e557.m3u8:DAZN TV (720p)
+#DESCRIPTION DAZN TV (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92951c2db99000787c00d.m3u8:Deal or no Deal
+#DESCRIPTION Deal or no Deal
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdaf9cf1bdc500073a8bcb.m3u8:Declassified (720p)
+#DESCRIPTION Declassified (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdaf3470f09a000714a2f6.m3u8:Degrassi
+#DESCRIPTION Degrassi
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65fd548f29adfd00089c662c.m3u8:Diagnosis Murder
+#DESCRIPTION Diagnosis Murder
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e922f6675f71000736db3b.m3u8:Doc Martin
+#DESCRIPTION Doc Martin
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdad934d73d50007a82472.m3u8:Doctor Who Classic (720p)
+#DESCRIPTION Doctor Who Classic (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6540fee72cf13100085d5a18.m3u8:Dog The Bounty Hunter (720p)
+#DESCRIPTION Dog The Bounty Hunter (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e951258a26d40007b3034c.m3u8:Dora TV
+#DESCRIPTION Dora TV
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6540fe6fbfbaec0008a583ae.m3u8:Duck Dynasty (720p)
+#DESCRIPTION Duck Dynasty (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e919ca865c590007ecd0bd.m3u8:Dynasty
+#DESCRIPTION Dynasty
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdb5500c21270007218ce1.m3u8:FailArmy
+#DESCRIPTION FailArmy
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64c2222fb0cf5c0008288c4f.m3u8:Family Feud Classic (720p)
+#DESCRIPTION Family Feud Classic (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdaa32a1b2fd00076693e8.m3u8:FBI Files
+#DESCRIPTION FBI Files
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8:FIFA+ (720p)
+#DESCRIPTION FIFA+ (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb62081afad500077e915e.m3u8:Fixers and Flippers
+#DESCRIPTION Fixers and Flippers
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92392a3e6270007f562e8.m3u8:Forensic Files
+#DESCRIPTION Forensic Files
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62f4f90e39183b000769f12b.m3u8:Frasier
+#DESCRIPTION Frasier
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-691e0561e32eb094b835c418.m3u8:Fresh Movies by VVS Films (720p)
+#DESCRIPTION Fresh Movies by VVS Films (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e90e8cb05d2b0007f10a61.m3u8:Game Show Central
+#DESCRIPTION Game Show Central
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-677f927554f43dad4b3258aa.m3u8:Garfield and Friends
+#DESCRIPTION Garfield and Friends
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65cf8ace332fec00081e7ea2.m3u8:Ghost Hunters
+#DESCRIPTION Ghost Hunters
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62cbef9ebb857100072fc187.m3u8:Global News National (720p)
+#DESCRIPTION Global News National (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea45010d0611000839868c.m3u8:Gordon Ramsay's Hell's Kitchen
+#DESCRIPTION Gordon Ramsay's Hell's Kitchen
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e916affb29c60007211c8a.m3u8:Gunsmoke
+#DESCRIPTION Gunsmoke
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e917b5e354cf0007b97a67.m3u8:Happy Days
+#DESCRIPTION Happy Days
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63934c218ef524000757b122.m3u8:Haunt TV (720p)
+#DESCRIPTION Haunt TV (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92967cd663f0007e604fd.m3u8:Homeful (720p)
+#DESCRIPTION Homeful (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65a803b607e03a0008925118.m3u8:Hot Ones
+#DESCRIPTION Hot Ones
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63a2f1dda0d69700078b7cba.m3u8:I Love Lucy
+#DESCRIPTION I Love Lucy
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e926429cb58900088f951f.m3u8:Income Property
+#DESCRIPTION Income Property
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-655f2d713944b60008bc7e90.m3u8:Ink Master
+#DESCRIPTION Ink Master
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6582f8dadfed030008e5a93d.m3u8:Iron Chef
+#DESCRIPTION Iron Chef
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66a105f4a79dea0008aa5e0f.m3u8:JAG
+#DESCRIPTION JAG
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-677f929054f43dad4b325c1c.m3u8:Just for Laughs GAGS (720p)
+#DESCRIPTION Just for Laughs GAGS (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62f4f414c2ba130007f8b24e.m3u8:King of Queens
+#DESCRIPTION King of Queens
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb66c867976d0007647e54.m3u8:Kitchen Battles
+#DESCRIPTION Kitchen Battles
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e91b5ca909cb0008114ae4.m3u8:Leave it to Bryan
+#DESCRIPTION Leave it to Bryan
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64c2201a2a7f2200089a0af2.m3u8:Let's Make a deal (720p)
+#DESCRIPTION Let's Make a deal (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62b97c5f0d8c8e0007cf48b9.m3u8:Life & Legend of Wyatt Earp
+#DESCRIPTION Life & Legend of Wyatt Earp
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63da365f60bc8f0008a50f44.m3u8:Matlock
+#DESCRIPTION Matlock
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb6a4feb32e8000708f4d0.m3u8:Max & Ruby
+#DESCRIPTION Max & Ruby
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92447ea1e2a000735ed33.m3u8:Midsomer Murders
+#DESCRIPTION Midsomer Murders
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea43aa0c43540007f2db96.m3u8:Mission Impossible
+#DESCRIPTION Mission Impossible
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6540ff2d770cf1000866b90a.m3u8:Modern Marvels (720p)
+#DESCRIPTION Modern Marvels (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-671645c4529ac900080c9a0b.m3u8:MODUS Super Series Darts (720p)
+#DESCRIPTION MODUS Super Series Darts (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65bcc9c8d77d450008b34c6b.m3u8:Monster Jam (720p)
+#DESCRIPTION Monster Jam (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e91c3add66e00007eeb24c.m3u8:More Pluto TV Comedy
+#DESCRIPTION More Pluto TV Comedy
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64a3d96f060e830008af6745.m3u8:MovieSphere by Lionsgate
+#DESCRIPTION MovieSphere by Lionsgate
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65410176770cf1000866bf31.m3u8:MTV Biggest Pop
+#DESCRIPTION MTV Biggest Pop
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-654100b4bdf3cf0008aa49c7.m3u8:MTV Classic (720p)
+#DESCRIPTION MTV Classic (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f8a0c230ab3300084369b8.m3u8:MTV Dating
+#DESCRIPTION MTV Dating
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-68b9b0dbf9cf3d7cb9f56d88.m3u8:MTV Jersey Shore
+#DESCRIPTION MTV Jersey Shore
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f89fcfd661bb00081ba45c.m3u8:MTV Reality
+#DESCRIPTION MTV Reality
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f9cccf110545000837912e.m3u8:MTV Ridiculousness
+#DESCRIPTION MTV Ridiculousness
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6541010f770cf1000866be98.m3u8:MTV Spankin’ New (1080p)
+#DESCRIPTION MTV Spankin’ New (1080p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-666021cccb3ea10008406866.m3u8:Nash Bridges (720p)
+#DESCRIPTION Nash Bridges (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65cf8d7428730900087c5907.m3u8:Nashville
+#DESCRIPTION Nashville
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62f4f5de1c100100075665ef.m3u8:NCIS
+#DESCRIPTION NCIS
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66a106c8a79dea0008aa5ef3.m3u8:NCIS: Los Angeles
+#DESCRIPTION NCIS: Los Angeles
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdb75c3afd1200079146a6.m3u8:Nick Jr. Pluto TV
+#DESCRIPTION Nick Jr. Pluto TV
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-654ca7f92c1d3300086b608c.m3u8:NickToons
+#DESCRIPTION NickToons
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb9ade112ca70007d8441d.m3u8:Nonstop Drama
+#DESCRIPTION Nonstop Drama
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e93d0a80d8d10008a0181e.m3u8:Nosey
+#DESCRIPTION Nosey
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e94ec74823db0007277a8f.m3u8:One Piece
+#DESCRIPTION One Piece
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6368e15a51e9560007c592ed.m3u8:OUTflix Movies (720p)
+#DESCRIPTION OUTflix Movies (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63e20bd160bc8f0008b4c949.m3u8:Perry Mason
+#DESCRIPTION Perry Mason
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66dad50215d2c60008d7afbd.m3u8:Pluto Classic Movie Westerns
+#DESCRIPTION Pluto Classic Movie Westerns
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66d717c6abec540008ba7eb5.m3u8:Pluto TV 80's Action
+#DESCRIPTION Pluto TV 80's Action
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea3c2e4823db00072788ed.m3u8:Pluto TV Action Movies
+#DESCRIPTION Pluto TV Action Movies
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-653bdb0fbdf3cf00089cc395.m3u8:Pluto TV Adventure
+#DESCRIPTION Pluto TV Adventure
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-68d25b620a0f3829b116bb6f.m3u8:Pluto TV Anime
+#DESCRIPTION Pluto TV Anime
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-638e11951177840007fdd6b2.m3u8:Pluto TV British Comedy
+#DESCRIPTION Pluto TV British Comedy
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e91af00c43540007f2bb43.m3u8:Pluto TV Classic TV Families
+#DESCRIPTION Pluto TV Classic TV Families
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-68d25c623175a2780d051d3a.m3u8:Pluto TV Classic TV Variety
+#DESCRIPTION Pluto TV Classic TV Variety
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92178946c8000079a3160.m3u8:Pluto TV Comedy
+#DESCRIPTION Pluto TV Comedy
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea3d24b8e02600071fa296.m3u8:Pluto TV Comedy Movies
+#DESCRIPTION Pluto TV Comedy Movies
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92708a7ce600007b2676a.m3u8:Pluto TV Crime Drama
+#DESCRIPTION Pluto TV Crime Drama
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdb0bcd707b9000739d2e5.m3u8:Pluto TV Drama Movies
+#DESCRIPTION Pluto TV Drama Movies
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-693adae77f21340ef9746f56.m3u8:Pluto TV FBI
+#DESCRIPTION Pluto TV FBI
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66fe4f71b2ffb100080baae3.m3u8:Pluto TV Hibernation Movies
+#DESCRIPTION Pluto TV Hibernation Movies
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea3f8a38acc80007072d26.m3u8:Pluto TV Horror
+#DESCRIPTION Pluto TV Horror
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-677f92205b68381e2db8cff2.m3u8:Pluto TV In Love
+#DESCRIPTION Pluto TV In Love
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92a58f3e4290007290c96.m3u8:Pluto TV Paranormal
+#DESCRIPTION Pluto TV Paranormal
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-67922858b83355184c699699.m3u8:Pluto TV Reality
+#DESCRIPTION Pluto TV Reality
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-630f1e6073bd1800082107f0.m3u8:Pluto TV Retro Crime Drama
+#DESCRIPTION Pluto TV Retro Crime Drama
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6408b41b83f58900081d91ad.m3u8:Pluto TV Retro Kid
+#DESCRIPTION Pluto TV Retro Kid
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66166cb1307fa30008f275e7.m3u8:Pluto TV Sci-fi
+#DESCRIPTION Pluto TV Sci-fi
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-639b4f75d3d35c0007d37b30.m3u8:Pluto TV Snooker 900
+#DESCRIPTION Pluto TV Snooker 900
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e9289f8d467f0007fbc701.m3u8:Pluto TV True Crime
+#DESCRIPTION Pluto TV True Crime
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdacc96a3751000811842d.m3u8:Pluto TV Westerns
+#DESCRIPTION Pluto TV Westerns
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66ebf4a88131f10008b74739.m3u8:Pokémon
+#DESCRIPTION Pokémon
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-681b16158f97d58ff194a3a9.m3u8:Project Runway (720p)
+#DESCRIPTION Project Runway (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-696e61287d2afdec4ff2cb75.m3u8:Puto TV Classic TV Crime Drama
+#DESCRIPTION Puto TV Classic TV Crime Drama
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64240d3d466225000827412b.m3u8:Qello Concerts
+#DESCRIPTION Qello Concerts
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62cc1e1e0d0611000837dc1d.m3u8:Radio-Canada INFO (720p)
+#DESCRIPTION Radio-Canada INFO (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65660223635c3c00086c2578.m3u8:Rawhide
+#DESCRIPTION Rawhide
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64e89cfc9c1e3900084ca663.m3u8:Real Disaster Channel (720p)
+#DESCRIPTION Real Disaster Channel (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb61992443200008c59aef.m3u8:Reno Duo
+#DESCRIPTION Reno Duo
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb6057f923fb0007eafb24.m3u8:Reno Rehab
+#DESCRIPTION Reno Rehab
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-681b196b896dcc617f8558fe.m3u8:RigTV (720p)
+#DESCRIPTION RigTV (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65367e914f123d000877d021.m3u8:River Monsters (720p)
+#DESCRIPTION River Monsters (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64a28c62d609b60008ca4933.m3u8:Rock Channel (720p)
+#DESCRIPTION Rock Channel (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb6cd97b90e60007bc318a.m3u8:Romance 365
+#DESCRIPTION Romance 365
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6874ad2f3484d60732267ba8.m3u8:Scare Tactics
+#DESCRIPTION Scare Tactics
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63920159db0dea0007dd9932.m3u8:Shades of Black (720p)
+#DESCRIPTION Shades of Black (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdb1c5e25122000798ac79.m3u8:South Park
+#DESCRIPTION South Park
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdb919d36cbd0007e6ab8a.m3u8:South Park En Français
+#DESCRIPTION South Park En Français
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65df4934f7f0af0008c32545.m3u8:South Park: Cartman Collection
+#DESCRIPTION South Park: Cartman Collection
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65df47f428730900089f83ac.m3u8:South Park: Kenny Collection
+#DESCRIPTION South Park: Kenny Collection
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65df49b30d45610008172c5b.m3u8:South Park: Kyle Collection
+#DESCRIPTION South Park: Kyle Collection
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-65df48ba28730900089f8480.m3u8:South Park: Stan Collection
+#DESCRIPTION South Park: Stan Collection
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-663115d923e24f000843b49c.m3u8:South Park: Welcome to Canada!
+#DESCRIPTION South Park: Welcome to Canada!
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63f87d057533d80008ab9549.m3u8:SpongeBob SquarePants (720p)
+#DESCRIPTION SpongeBob SquarePants (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66601d838ce3110008a9d7bf.m3u8:Star Trek: The Next Generation
+#DESCRIPTION Star Trek: The Next Generation
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66601e338ea5560008f7820e.m3u8:Star Trek: The Original Series
+#DESCRIPTION Star Trek: The Original Series
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-693a85c44b296a40bb0cb3b8.m3u8:Star Trek: Voyager
+#DESCRIPTION Star Trek: Voyager
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-693bf37b75432d022c85ef01.m3u8:Stargate
+#DESCRIPTION Stargate
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6728c70fc7626f0008b27f52.m3u8:Stingray Holidayscapes
+#DESCRIPTION Stingray Holidayscapes
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6729d651c7626f0008b5dacf.m3u8:Super Channel Hearties (720p)
+#DESCRIPTION Super Channel Hearties (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6874ac742704ca31d815b8ed.m3u8:Survivor
+#DESCRIPTION Survivor
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e9186f8b685d000773cf58.m3u8:Taxi
+#DESCRIPTION Taxi
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e9145ec07f2a00070e68dc.m3u8:The Andy Griffith Show
+#DESCRIPTION The Andy Griffith Show
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6565fefdc917a50008485cc6.m3u8:The Beverly Hillbillies
+#DESCRIPTION The Beverly Hillbillies
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64f8a22a3efb510008245df0.m3u8:The Challenge
+#DESCRIPTION The Challenge
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66e2a94d167a8b000813485d.m3u8:The Conners
+#DESCRIPTION The Conners
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e91384210bec0007ba714c.m3u8:The Dick Van Dyke Show
+#DESCRIPTION The Dick Van Dyke Show
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66289716039f940008cf20a2.m3u8:The Dog Whisperer with Caesar Millan (720p)
+#DESCRIPTION The Dog Whisperer with Caesar Millan (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea459c8d467f0007fbec86.m3u8:The Emeril Lagasse Channel (720p)
+#DESCRIPTION The Emeril Lagasse Channel (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66166ce7aec96800080f6bd3.m3u8:The Graham Norton Show (720p)
+#DESCRIPTION The Graham Norton Show (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92e536f28870007fa9b3a.m3u8:The Judge Judy Channel
+#DESCRIPTION The Judge Judy Channel
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e91563ce7ce300076f917e.m3u8:The Love Boat
+#DESCRIPTION The Love Boat
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-67b4b8b47d8025b1610a0a57.m3u8:The Martha Stewart Channel (720p)
+#DESCRIPTION The Martha Stewart Channel (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62bdabbc5611f2000761ca30.m3u8:The New Detectives
+#DESCRIPTION The New Detectives
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6874ad743ffa5e0c917f6e20.m3u8:The Outer Limits (720p)
+#DESCRIPTION The Outer Limits (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e92b5fca869f00078f0162.m3u8:The Pet Collective
+#DESCRIPTION The Pet Collective
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64c2214c2a7f2200089a0c4b.m3u8:The Price is Right (720p)
+#DESCRIPTION The Price is Right (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64c220e15dc1660008a79c96.m3u8:The Price is Right: The Barker Era (720p)
+#DESCRIPTION The Price is Right: The Barker Era (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63da370e2e477400081cf8b6.m3u8:The Weather Network (720p)
+#DESCRIPTION The Weather Network (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-691b023a7613e09a8b209539.m3u8:The X-Files
+#DESCRIPTION The X-Files
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-64ca723a2bc49300081a8966.m3u8:Three's Company (720p)
+#DESCRIPTION Three's Company (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62fb6da41afad500077e9178.m3u8:Thrillers 365
+#DESCRIPTION Thrillers 365
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6540ff4f7312a40008297b59.m3u8:Tiny House Nation (720p)
+#DESCRIPTION Tiny House Nation (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea4dadce395f0007086df2.m3u8:TNA Wrestling (720p)
+#DESCRIPTION TNA Wrestling (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-638e10220aa6a6000726979f.m3u8:Top Gear
+#DESCRIPTION Top Gear
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e9566e27ce19000732ec85.m3u8:Tortues Ninja TV (720p)
+#DESCRIPTION Tortues Ninja TV (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e93b8eb8e02600071f8b1d.m3u8:Total Crime (720p)
+#DESCRIPTION Total Crime (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e95265c9fd030007268fb9.m3u8:Totally Turtles (720p)
+#DESCRIPTION Totally Turtles (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-63da36dea995710008727d4d.m3u8:Transformers
+#DESCRIPTION Transformers
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-66ed3eb27358ce000830df49.m3u8:UFC (720p)
+#DESCRIPTION UFC (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62e924f2be69bc0007b7d53d.m3u8:Unsolved Mysteries
+#DESCRIPTION Unsolved Mysteries
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-635659445b4c4700076d2ad1.m3u8:Walker Texas Ranger
+#DESCRIPTION Walker Texas Ranger
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-688a44cf5d73ec0a3f49718b.m3u8:Weeds / Nurse Jackie (720p)
+#DESCRIPTION Weeds / Nurse Jackie (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6728c561daad7f000881ac83.m3u8:Wicked Tuna
+#DESCRIPTION Wicked Tuna
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-6972546cc62833833a187f50.m3u8:Willow Sports (720p)
+#DESCRIPTION Willow Sports (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-667d419415f35c0008942dd1.m3u8:World of Love Island (720p)
+#DESCRIPTION World of Love Island (720p)
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-62ea4b755e8e770007387b79.m3u8:World Poker Tour
+#DESCRIPTION World Poker Tour
+#SERVICE 4097:0:1:0:0:0:0:0:0:https%3a//jmp2.uk/plu-654102ed770cf1000866c307.m3u8:Yo! MTV (1080p)
+#DESCRIPTION Yo! MTV (1080p)
