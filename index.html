@@ -2,74 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>E2 IPTV Converter Pro</title>
+    <title>E2 IPTV Final Fix</title>
     <style>
-        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; direction: ltr; }
-        h2 { color: white; }
-        textarea { 
-            width: 90%; height: 350px; 
-            background: #1e1e1e; color: #00ff00; 
-            border: 2px solid #333; padding: 10px; 
-            font-size: 14px; border-radius: 10px;
-            text-align: left;
-        }
-        .btn { 
-            background: #007bff; color: white; border: none; 
-            padding: 15px 30px; margin: 10px; cursor: pointer; 
-            border-radius: 5px; font-size: 16px; font-weight: bold;
-        }
-        .btn:hover { background: #0056b3; }
-        .footer { margin-top: 20px; color: #888; font-size: 12px; }
+        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
+        textarea { width: 95%; height: 400px; background: #1e1e1e; color: #f0f0f0; border: 2px solid #333; padding: 10px; border-radius: 10px; font-size: 13px; }
+        .btn { background: #28a745; color: white; border: none; padding: 15px 30px; margin: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 16px; }
+        .btn:hover { background: #218838; }
     </style>
 </head>
 <body>
 
-    <h2>Enigma2 IPTV Converter</h2>
-    <p style="color: #aaa;">Paste M3U links and click Convert</p>
-
-    <textarea id="box" placeholder="Paste your links here..."></textarea>
-
+    <h2 style="color:white">Enigma2 Bouquet Converter (Standard Format)</h2>
+    <textarea id="box" placeholder="ضع روابط M3U هنا..."></textarea>
     <br>
-    <button class="btn" onclick="startConversion()">Convert Now (تحويل)</button>
-    <button class="btn" style="background:#555" onclick="document.getElementById('box').value=''">Clear (مسح)</button>
-
-    <div class="footer">The results will appear in the box above.</div>
+    <button class="btn" onclick="startConversion()">Convert for Channels Editor</button>
 
     <script>
         function startConversion() {
             var area = document.getElementById('box');
             var rawData = area.value;
-            
-            if (!rawData.trim()) {
-                alert("The box is empty!");
-                return;
-            }
-
             var lines = rawData.split('\n');
-            var finalResult = "#NAME IPTV Bouquet\r\n";
-            var currentChannelName = "Channel";
+            var finalResult = "#NAME IPTV Bouquet\n";
+            var currentName = "Stream";
 
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
 
-                if (line.includes("#EXTINF")) {
-                    var parts = line.split(',');
-                    currentChannelName = parts[parts.length - 1].trim() || "Channel";
+                if (line.startsWith("#EXTINF")) {
+                    currentName = line.split(',').pop().trim();
                 } 
                 else if (line.startsWith("http")) {
-                    // فك التشفير أولاً عشان نضمن إن الرابط سليم
-                    var decodedUrl = decodeURIComponent(line);
+                    // 1. فك أي تشفير قديم للحصول على الرابط الخام
+                    var rawUrl = decodeURIComponent(line);
                     
-                    // تحويل النقطتين لـ %3a (ده المطلوب في ملفات الباقة فعلياً للـ Enigma2)
-                    var bouquetUrl = decodedUrl.replace(/:/g, '%3a');
+                    // 2. السر هنا: تحويل كل النقط (:) لـ %3a
+                    var formattedUrl = rawUrl.replace(/:/g, '%3a');
                     
-                    finalResult += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + bouquetUrl + ":" + currentChannelName + "\r\n";
-                    finalResult += "#DESCRIPTION " + currentChannelName + "\r\n";
+                    // 3. لكن لازم نرجع أول واحدة بعد http أو https لأصلها عشان السطر يشتغل
+                    formattedUrl = formattedUrl.replace(/http%3a/g, 'http:').replace(/https%3a/g, 'https:');
+                    
+                    // السطر ده هو اللي بيفهمه DreamboxEdit
+                    finalResult += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + formattedUrl + ":" + currentName + "\n";
+                    finalResult += "#DESCRIPTION " + currentName + "\n";
                 }
             }
-
             area.value = finalResult;
-            alert("Done! Your bouquet is ready.");
+            alert("تم التحويل! جرب الآن تفتح الملف ببرنامج تعديل القنوات.");
         }
     </script>
 </body>
