@@ -1,41 +1,76 @@
 <!DOCTYPE html>
-<html lang="en"> <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <title>E2 IPTV Converter</title>
+    <title>E2 IPTV Converter Pro</title>
     <style>
-        body { 
-            background: #121212; 
-            color: #00ff00; 
-            font-family: monospace; 
-            text-align: center; 
-            padding: 20px;
-            direction: ltr; /* تأكيد الاتجاه من اليسار لليمين */
-        }
+        body { background: #121212; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; direction: ltr; }
         h2 { color: white; }
         textarea { 
             width: 90%; height: 350px; 
             background: #1e1e1e; color: #00ff00; 
             border: 2px solid #333; padding: 10px; 
             font-size: 14px; border-radius: 10px;
-            text-align: left; /* الروابط تبدأ من الشمال */
-            direction: ltr;
+            text-align: left;
         }
         .btn { 
             background: #007bff; color: white; border: none; 
             padding: 15px 30px; margin: 10px; cursor: pointer; 
             border-radius: 5px; font-size: 16px; font-weight: bold;
         }
-        /* ... باقي الستايل كما هو ... */
+        .btn:hover { background: #0056b3; }
+        .footer { margin-top: 20px; color: #888; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <h2>Enigma2 IPTV Bouquet Converter</h2>
-    <p style="color: #aaa;">Paste your M3U links below and click Convert</p>
+    <h2>Enigma2 IPTV Converter</h2>
+    <p style="color: #aaa;">Paste M3U links and click Convert</p>
 
-    <textarea id="box" placeholder="Paste your M3U list here..."></textarea>
-    
-    ```
+    <textarea id="box" placeholder="Paste your links here..."></textarea>
 
-### ملخص النصيحة:
-خليها `lang="en"` طالما الأداة برمجية وهدفها إخراج كود (Bouquet)، لأن ده بيمنع أي مشاكل في عرض الرموز الخاصة اللي الإنيجما 2 حساس جداً ليها. وكده كده أنت "برنس" في التعامل مع الـ HTML، فالتغيير ده هيخلي شكل الصفحة "احترافي" أكتر كأداة تطوير (Dev Tool).
+    <br>
+    <button class="btn" onclick="startConversion()">Convert Now (تحويل)</button>
+    <button class="btn" style="background:#555" onclick="document.getElementById('box').value=''">Clear (مسح)</button>
+
+    <div class="footer">The results will appear in the box above.</div>
+
+    <script>
+        function startConversion() {
+            var area = document.getElementById('box');
+            var rawData = area.value;
+            
+            if (!rawData.trim()) {
+                alert("The box is empty!");
+                return;
+            }
+
+            var lines = rawData.split('\n');
+            var finalResult = "#NAME IPTV Bouquet\r\n";
+            var currentChannelName = "Channel";
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+
+                if (line.includes("#EXTINF")) {
+                    var parts = line.split(',');
+                    currentChannelName = parts[parts.length - 1].trim() || "Channel";
+                } 
+                else if (line.startsWith("http")) {
+                    // فك التشفير أولاً عشان نضمن إن الرابط سليم
+                    var decodedUrl = decodeURIComponent(line);
+                    
+                    // تحويل النقطتين لـ %3a (ده المطلوب في ملفات الباقة فعلياً للـ Enigma2)
+                    var bouquetUrl = decodedUrl.replace(/:/g, '%3a');
+                    
+                    finalResult += "#SERVICE 4097:0:1:0:0:0:0:0:0:" + bouquetUrl + ":" + currentChannelName + "\r\n";
+                    finalResult += "#DESCRIPTION " + currentChannelName + "\r\n";
+                }
+            }
+
+            area.value = finalResult;
+            alert("Done! Your bouquet is ready.");
+        }
+    </script>
+</body>
+</html>
